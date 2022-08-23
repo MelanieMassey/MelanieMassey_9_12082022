@@ -4,14 +4,16 @@ import LoadingPage from "./LoadingPage.js"
 
 import Actions from './Actions.js'
 
+import { formatDate, formatStatus } from "../app/format.js"
+
 const row = (bill) => {
   return (`
     <tr>
       <td>${bill.type}</td>
       <td>${bill.name}</td>
-      <td>${bill.date}</td>
+      <td>${formatDate(bill.date)}</td>
       <td>${bill.amount} €</td>
-      <td>${bill.status}</td>
+      <td>${formatStatus(bill.status)}</td>
       <td>
         ${Actions(bill.fileUrl)}
       </td>
