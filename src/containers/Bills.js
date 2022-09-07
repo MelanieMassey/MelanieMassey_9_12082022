@@ -34,7 +34,16 @@ export default class {
       .list()
       .then(snapshot => {
         // console.log(snapshot)
-        let bills = snapshot.sort((a,b) => Date.parse(b.date) - Date.parse(a.date))
+        let bills = snapshot.sort((a,b) => {
+          if(a.date === null) {
+            return 1
+          }
+          if(b.date
+             === null) {
+            return -1
+          }
+          return Date.parse(b.date) - Date.parse(a.date)
+        })
         // let bills = snapshot.sort((a,b) => b.date - a.date)
         // bills = bills
         //   .map(doc => {

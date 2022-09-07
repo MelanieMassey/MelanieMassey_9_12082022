@@ -9,7 +9,6 @@ export default class NewBill {
     const formNewBill = this.document.querySelector(`form[data-testid="form-new-bill"]`)
     formNewBill.addEventListener("submit", this.handleSubmit)
     const file = this.document.querySelector(`input[data-testid="file"]`)
-    console.log(file)
     file.addEventListener("change", this.handleChangeFile)
     this.fileUrl = null
     this.fileName = null
@@ -22,7 +21,7 @@ export default class NewBill {
 
     //Vérification du type de fichier
     const fileType = file.type;
-    const allowedFileTypes = ['image/pgn', 'image/jpg', 'image/jpeg'];
+    const allowedFileTypes = ['image/png', 'image/jpg', 'image/jpeg'];
     const isFileAuthorized = allowedFileTypes.includes(fileType);
     
     if (isFileAuthorized) {
@@ -70,6 +69,7 @@ export default class NewBill {
       fileName: this.fileName,
       status: 'pending'
     }
+    console.log(bill.fileUrl)
     this.updateBill(bill)
     this.onNavigate(ROUTES_PATH['Bills'])
   }
