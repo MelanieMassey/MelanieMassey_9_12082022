@@ -41,37 +41,47 @@ describe("Given I am connected as an employee and on NewBill Page", () => {
 
   test("Then I should be on the NewBill page", () => {
 
+    const submitNewBill  = screen.getByTestId('submitNewBill')
+
     expect(screen.getByText("Envoyer une note de frais")).toBeTruthy();
+
+    expect(submitNewBill).toBeTruthy();
   })
   
-  describe("When I updload a file which is not allowed", () => {
-    test("Then a not allowed file message should show up", () => {
-      Object.defineProperty(window, 'localStorage', { value: localStorageMock })
-      window.localStorage.setItem('user', JSON.stringify({
-        type: 'Employee'
-      }))
-
-      window.onNavigate(ROUTES_PATH.NewBill)
-      
-      const newBill = new NewBill({
-        document, onNavigate, store: mockStore, localStorage: window.localStorage
+  describe("Given I uplad a file", () => {
+    describe("When the file format is not allowed", () => {
+      test("Then a not allowed file message should show up", () => {
+        Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+        window.localStorage.setItem('user', JSON.stringify({
+          type: 'Employee'
+        }))
+  
+        window.onNavigate(ROUTES_PATH.NewBill)
+        
+        const newBill = new NewBill({
+          document, onNavigate, store: mockStore, localStorage: window.localStorage
+        })
+  
+        const file = screen.getByTestId("file")
+        // INFO -- Liste type fichiers : https://developer.mozilla.org/fr/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
+        const testFileData = {
+          file: new File(["pdf"], "test.pdf", { type: "application/pdf" })
+        }
+  
+        const handleChangeFile = jest.fn(newBill.handlehandleChangeFile);
+        file.addEventListener("change", handleChangeFile);
+        userEvent.upload(file, testFileData.file)
+        
+  
+        const unauthorizedFileMessage = screen.getByTestId("file-error")
+        expect(unauthorizedFileMessage.classList.contains("hidden")).not.toBe(true)
       })
-
-      const file = screen.getByTestId("file")
-      // INFO -- Liste type fichiers : https://developer.mozilla.org/fr/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
-      const testFileData = {
-        file: new File(["pdf"], "test.pdf", { type: "application/pdf" })
-      }
-
-      const handleChangeFile = jest.fn(newBill.handlehandleChangeFile);
-      file.addEventListener("change", handleChangeFile);
-      userEvent.upload(file, testFileData.file)
-      
-
-      const unauthorizedFileMessage = screen.getByTestId("file-error")
-      expect(unauthorizedFileMessage.classList.contains("hidden")).not.toBe(true)
+    })
+    describe("When the file format is allowed", () => {
+      test("Then ")
     })
   })
+  
   
   describe("Given I click the Submit button", () => {
       test("Then the handleSubmit function should be called", () => {
@@ -86,8 +96,12 @@ describe("Given I am connected as an employee and on NewBill Page", () => {
           document, onNavigate, store: mockStore, localStorage: window.localStorage
         })
 
-        const submitNewBill  = screen.getByTestId('submitNewBill')
-        submitNewBill.addEventListener("submit", handleSubmit)
+        const formNewBill  = screen.getByTestId('form-new-bill')
+        const handleSubmit = jest.fn(newBill.handleSubmit)
+        formNewBill.addEventListener("submit", handleSubmit)
+        fireEvent.submit(formNewBill)
+
+        expect(handleSubmit).toHaveBeenCalled()
       })
     // test("Then it should create a new bill and redirect to Bills page", () => {
     //   Object.defineProperty(window, 'localStorage', { value: localStorageMock })
@@ -133,6 +147,7 @@ describe("Given I am connected as an employee and on NewBill Page", () => {
       
     //   const handleSubmit = jest.fn(newBill.handleSubmit)
     //   submitNewBill.addEventListener("submit", handleSubmit)
+    //   fireEvent.submit(submitNewBill)
       
     //   // expect all inputs to be entered
     //   // expect updateBill to be called
