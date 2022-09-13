@@ -4,7 +4,7 @@
 
 // import {screen, waitFor} from "@testing-library/dom"
 import "@testing-library/jest-dom"
-import { fireEvent, screen, getByTestId, getAllByTestId, getByText, waitFor } from "@testing-library/dom"
+import { screen, waitFor } from "@testing-library/dom"
 import userEvent from "@testing-library/user-event"
 
 import BillsUI from "../views/BillsUI.js"
