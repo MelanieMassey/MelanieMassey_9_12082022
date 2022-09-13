@@ -23,8 +23,10 @@ export default class NewBill {
     const fileType = file.type;
     const allowedFileTypes = ['image/png', 'image/jpg', 'image/jpeg'];
     const isFileAuthorized = allowedFileTypes.includes(fileType);
-    
+    const unauthorizedFileMessage = this.document.querySelector('p[data-testid="file-error"]')
+
     if (isFileAuthorized) {
+      unauthorizedFileMessage.classList.add("hidden")
       const filePath = e.target.value.split(/\\/g)
       const fileName = filePath[filePath.length-1]
       const formData = new FormData()
@@ -47,7 +49,6 @@ export default class NewBill {
           this.fileName = fileName
         }).catch(error => console.error(error))
     } else {
-      const unauthorizedFileMessage = this.document.querySelector('p[data-testid="file-error"]')
       unauthorizedFileMessage.classList.remove("hidden")
     }
   }
