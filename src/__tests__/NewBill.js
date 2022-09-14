@@ -31,6 +31,10 @@ describe("Given I am connected as an employee and on NewBill Page", () => {
 
     window.onNavigate(ROUTES_PATH.NewBill)
   })
+
+  afterAll(() => {      
+    console.error.mockRestore()
+  })
   
   test("Then the mail icon in vertical layout should be highlighted", async () => {
     await waitFor(() => screen.getByTestId("icon-mail"))
@@ -51,34 +55,42 @@ describe("Given I am connected as an employee and on NewBill Page", () => {
   describe("Given I uplad a file", () => {
     describe("When the file format is not allowed", () => {
       test("Then a not allowed file message should show up", () => {
-        Object.defineProperty(window, 'localStorage', { value: localStorageMock })
-        window.localStorage.setItem('user', JSON.stringify({
-          type: 'Employee'
-        }))
-  
-        window.onNavigate(ROUTES_PATH.NewBill)
-        
         const newBill = new NewBill({
           document, onNavigate, store: mockStore, localStorage: window.localStorage
         })
-  
+        
         const file = screen.getByTestId("file")
         // INFO -- Liste type fichiers : https://developer.mozilla.org/fr/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
         const testFileData = {
           file: new File(["pdf"], "test.pdf", { type: "application/pdf" })
         }
   
-        const handleChangeFile = jest.fn(newBill.handlehandleChangeFile);
+        const handleChangeFile = jest.fn(newBill.handleChangeFile);
         file.addEventListener("change", handleChangeFile);
         userEvent.upload(file, testFileData.file)
-        
-  
+          
         const unauthorizedFileMessage = screen.getByTestId("file-error")
         expect(unauthorizedFileMessage.classList.contains("hidden")).not.toBe(true)
       })
     })
     describe("When the file format is allowed", () => {
-      test("Then ")
+      test("Then it should update the file input with its name", () => {
+        const newBill = new NewBill({
+          document, onNavigate, store: mockStore, localStorage: window.localStorage
+        })
+        
+        const file = screen.getByTestId("file")
+        // INFO -- Liste type fichiers : https://developer.mozilla.org/fr/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
+        const testFileData = {
+          file: new File(["img"], "test.png", { type: "image/png" })
+        }
+  
+        const handleChangeFile = jest.fn(newBill.handleChangeFile);
+        file.addEventListener("change", handleChangeFile);
+        userEvent.upload(file, testFileData.file);
+        
+        expect(file.files[0].name).toBe("test.png");
+      })
     })
   })
   

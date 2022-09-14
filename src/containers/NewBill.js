@@ -50,6 +50,7 @@ export default class NewBill {
         }).catch(error => console.error(error))
     } else {
       unauthorizedFileMessage.classList.remove("hidden")
+      e.target.value = ""
     }
   }
 
